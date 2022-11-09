@@ -6,6 +6,12 @@ from flask import Flask  # Flask is the web app that we will customize
 from flask import render_template
 
 app = Flask(__name__)  # create an app
+stories = {
+    1: {'title': 'First note', 'text': 'This is my first note', 'date': '10/18/2022'},
+    2: {'title': 'Second note', 'text': 'This is my second note', 'date': '10/19/2022'},
+    3: {'title': 'Third note', 'text': 'This is my Third note', 'date': '10/20/2022'}
+}
+a_user = {'name': 'Mohammad Azad', 'email': 'mogli@uncc.edu'}
 
 
 # @app.route is a decorator. It gives the function "index" special powers.
@@ -13,8 +19,12 @@ app = Flask(__name__)  # create an app
 # get called. What it returns is what is shown as the web page
 @app.route('/')
 def index():
-    a_user = {'name': 'Mogli', 'email': 'mogli@uncc.edu'}
     return render_template('index.html', user=a_user)
+
+
+@app.route('/dashboard')
+def get_stories():
+    return render_template('dashboard.html', stories=stories, user=a_user)
 
 
 app.run(host=os.getenv('IP', '127.0.0.1'), port=int(os.getenv('PORT', 5000)), debug=True)
