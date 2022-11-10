@@ -12,6 +12,7 @@ stories = {
     3: {'title': 'Third note', 'text': 'This is my Third note', 'date': '10/20/2022'}
 }
 a_user = {'name': 'Mohammad Azad', 'email': 'mogli@uncc.edu'}
+company = 'Orange Monday'
 
 
 # @app.route is a decorator. It gives the function "index" special powers.
@@ -19,12 +20,17 @@ a_user = {'name': 'Mohammad Azad', 'email': 'mogli@uncc.edu'}
 # get called. What it returns is what is shown as the web page
 @app.route('/')
 def index():
-    return render_template('index.html', user=a_user)
+    return render_template('index.html', user=a_user, company=company)
 
 
 @app.route('/dashboard')
 def get_stories():
-    return render_template('dashboard.html', stories=stories, user=a_user)
+    return render_template('dashboard.html', stories=stories, user=a_user, company=company)
+
+
+@app.route('/details/<story_id>')
+def get_details(story_id):
+    return render_template('story-detail.html', story=stories[int(story_id)], user=a_user, company=company)
 
 
 app.run(host=os.getenv('IP', '127.0.0.1'), port=int(os.getenv('PORT', 5000)), debug=True)
