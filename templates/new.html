@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html>
 <head>
 <title>{{company}}</title>
@@ -12,15 +12,14 @@
   .sub_div { position: fixed; width: 100%; bottom: 0px;}
 </style>
 </head>
-<body class="w3-light-grey w3-content" style="max-width:1600px">
+<body class="w3-white w3-content" style="max-width:1600px">
 
   <!-- Top Bar -->
   <div class="w3-bar w3-white w3-wide w3-padding w3-card">
     <a  class="w3-bar-item w3-animate-left"><b>{{company}}</b></a>
     <!-- Float links to the right. Hide them on small screens -->
     <div class="w3-right w3-hide-small">
-      <a class="w3-bar-item w3-center " href="{{ url_for('index') }}">Home</a>
-      <a class="w3-bar-item w3-center">Welcome, {{user.name}}</a>
+      <a class="w3-bar-item w3-center">Welcome {{user.name}}</a>
     </div>
   </div>
 <!-- Sidebar/menu -->
@@ -39,53 +38,31 @@
 <div class="w3-main" style="margin-left:300px">
 
   <!-- Header -->
-  <header id="portfolio">
-    <span class="w3-button w3-hide-large w3-xxlarge w3-hover-text-grey" onclick="w3_open()"><i class="fa fa-bars"></i></span>
-    <div class="w3-container">
-    <h1><b>Story-Board</b></h1>
+<div class="  w3-wide w3-padding w3-transparent"></div>
+  <div class="  w3-wide w3-padding w3-transparent"></div>
 
-    </div>
-  </header>
-
-    <!-- Backlog Table -->
-    <div class="w3-row-padding" style="margin:0 -16px">
-      <div class="w3-third w3-margin-bottom">
-        <ul class="w3-ul w3-border w3-white w3-center w3-opacity w3-hover-opacity-off">
-          <li class="w3-black w3-xlarge w3-padding-32">Backlog</li>
-          {% for key,value in stories.items() %}
-            {% if value.status == 'Backlog' %}
-              <li class="w3-padding-16"><a href="{{url_for('get_details', story_id = key)}}">{{value.title}}</a></li>
-            {% endif %}
-          {% endfor %}
-        </ul>
+    <!-- Story detail -->
+<form action="new" method="post">
+  <div class="w3-container">
+    <div class="w3-container  w3-center  w3-card width:500px">
+      <h2 class="w3-wide">Add a Story</h2>
+      <p><input class="w3-input w3-border" type="text" name="title" placeholder="Feature title"></p>
+      <p><textarea class="w3-input w3-border" rows="6" type="text" name="noteText" placeholder="Description"></textarea></p>
+      <div class=" w3-container w3-left">
+        <p>Status of the story:</p>
+        <input class=" w3-left" type="radio" id="backlog" name="status" value="Backlog">
+        <label class=" w3-left w3-margin-left" for="backlog">Backlog</label><br>
+        <input class=" w3-left" type="radio" id="doing" name="status" value="Doing">
+        <label class=" w3-left w3-margin-left" for="doing">Doing</label><br>
+        <input class=" w3-left" type="radio" id="done" name="status" value="Done">
+        <label class=" w3-left w3-margin-left" for="done">Done</label><br>
       </div>
-
-      <div class="w3-third w3-margin-bottom">
-        <ul class="w3-ul w3-border w3-white w3-center w3-opacity w3-hover-opacity-off">
-          <li class="w3-teal w3-xlarge w3-padding-32">Doing</li>
-          {% for key,value in stories.items() %}
-            {% if value.status == 'Doing' %}
-              <li class="w3-padding-16"><a href="{{url_for('get_details', story_id = key)}}">{{value.title}}</a></li>
-            {% endif %}
-          {% endfor %}
-        </ul>
-      </div>
-
-      <div class="w3-third">
-        <ul class="w3-ul w3-border w3-white w3-center w3-opacity w3-hover-opacity-off">
-          <li class="w3-black w3-xlarge w3-padding-32">Done</li>
-          {% for key,value in stories.items() %}
-            {% if value.status == 'Done' %}
-              <li class="w3-padding-16"><a href="{{url_for('get_details', story_id = key)}}">{{value.title}}</a></li>
-            {% endif %}
-          {% endfor %}
-        </ul>
+      <div class="w3-container">
+        <button type="submit" class=" w3-button w3-padding-large w3-teal w3-margin-bottom " onclick="document.getElementById('subscribe').style.display='none'">Add</button>
       </div>
     </div>
   </div>
-
-
-
+</form>
   <div class="sub_div">
   <div class="w3-black w3-center w3-padding-24">Powered by <a title="Tang" target="_blank" >Orange Monday</a></div>
   </div>
