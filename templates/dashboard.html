@@ -10,26 +10,29 @@
 <style>
   body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
   .sub_div { position: fixed; width: 100%; bottom: 0px;}
+  .top{position: fixed; width: 100%; top: 0px;}
+  .toppad{padding-top: 50px}
+  .botpad{padding-bottom: 60px}
 </style>
 </head>
 <body class="w3-light-grey w3-content" style="max-width:1600px">
 
   <!-- Top Bar -->
-  <div class="w3-bar w3-white w3-wide w3-padding w3-card">
+  <div class="top w3-bar w3-white w3-wide w3-padding w3-card">
     <a  class="w3-bar-item w3-animate-left"><b>{{company}}</b></a>
     <!-- Float links to the right. Hide them on small screens -->
     <div class="w3-right w3-hide-small">
-      <a class="w3-bar-item w3-center " href="{{ url_for('index') }}">Home</a>
-      <a class="w3-bar-item w3-center">Welcome, {{user.name}}</a>
+      <a class="w3-bar-item w3-center">Welcome {{user.name}}</a>
     </div>
   </div>
 <!-- Sidebar/menu -->
-<nav class="w3-sidebar w3-collapse w3-white w3-animate-left" style="z-index:3;width:300px;" id="mySidebar"><br>
+<nav class="w3-sidebar w3- w3-collapse w3-white w3-animate-left" style="z-index:0;width:300px;" id="mySidebar"><br>
   <div class="w3-bar-block">
-    <a href="#portfolio" onclick="w3_close()" class="w3-bar-item w3-button w3-padding w3-text-teal"><i class="fa fa-th-large fa-fw w3-margin-right"></i>HOME</a>
-    <a href="#about" onclick="w3_close()" class="w3-bar-item w3-button w3-padding"><i class="fa fa-user fa-fw w3-margin-right"></i>STORYBOARD</a>
+    <a  class="w3-bar-item w3-animate-left w3-wide"><b>{{company}}</b></a>
+    <a href="{{ url_for('index') }}" onclick="w3_close()" class="w3-bar-item w3-button w3-padding w3-text-teal"><i class="fa fa-user fa-fw w3-margin-right"></i>HOME</a>
+    <a href="{{url_for('get_stories')}}" onclick="w3_close()" class="w3-bar-item w3-button w3-padding"><i class="fa fa-solid fa-list fa-fw w3-margin-right"></i>STORYBOARD</a>
+    <a href="{{url_for('new_story')}}" onclick="w3_close()" class="w3-bar-item w3-button w3-padding"><i class="fa fa-solid fa-plus fa-fw w3-margin-right"></i>ADD NEW</a>
   </div>
-
 </nav>
 
 <!-- Overlay effect when opening sidebar on small screens -->
@@ -41,14 +44,14 @@
   <!-- Header -->
   <header id="portfolio">
     <span class="w3-button w3-hide-large w3-xxlarge w3-hover-text-grey" onclick="w3_open()"><i class="fa fa-bars"></i></span>
-    <div class="w3-container">
+    <div class="toppad w3-container">
     <h1><b>Story-Board</b></h1>
 
     </div>
   </header>
 
     <!-- Backlog Table -->
-    <div class="w3-row-padding" style="margin:0 -16px">
+    <div class="botpad w3-row-padding" style="margin:0 -16px">
       <div class="w3-third w3-margin-bottom">
         <ul class="w3-ul w3-border w3-white w3-center w3-opacity w3-hover-opacity-off">
           <li class="w3-black w3-xlarge w3-padding-32">Backlog</li>
@@ -82,16 +85,15 @@
         </ul>
       </div>
     </div>
-  </div>
 
 
 
-  <div class="sub_div">
-  <div class="w3-black w3-center w3-padding-24">Powered by <a title="Tang" target="_blank" >Orange Monday</a></div>
-  </div>
+
 <!-- End page content -->
 </div>
-
+  <div class="sub_div">
+  <div class="w3-black w3-center w3-padding-24">Powered by <a title="Tang" target="_blank" >{{company}}</a></div>
+  </div>
 <script>
 // Script to open and close sidebar
 function w3_open() {
