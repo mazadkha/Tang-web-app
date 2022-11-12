@@ -5,8 +5,12 @@ import os  # os is used to get environment variables IP & PORT
 from flask import Flask, redirect, url_for  # Flask is the web app that we will customize
 from flask import render_template
 from flask import request
+from database import db
 
 app = Flask(__name__)  # create an app
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///flask_story_app.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db.init_app(app)  # Bind SQLAlchemy db object to this Flask app
 stories = {
     1: {'title': 'First note', 'text': 'This is my first note', 'status': 'Backlog'},
     2: {'title': 'Second note', 'text': 'This is my second note', 'status': 'Backlog'},
