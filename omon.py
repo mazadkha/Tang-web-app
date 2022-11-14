@@ -34,8 +34,8 @@ def index():
 @app.route('/dashboard')
 def get_stories():
     a_user = db.session.query(User).filter_by(email='mazad@uncc.edu')
-    stories = db.session.query(Note).all()
-    return render_template('dashboard.html', stories=stories, user=a_user, company=company)
+    stories = db.session.query(Note)
+    return render_template('dashboard.html', story=stories, user=a_user, company=company)
 
 
 @app.route('/details/<story_id>')
