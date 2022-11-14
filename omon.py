@@ -6,17 +6,19 @@ from flask import Flask, redirect, url_for  # Flask is the web app that we will 
 from flask import render_template
 from flask import request
 from database import db
+from models import Note as Note
+from models import User as User
 
 app = Flask(__name__)  # create an app
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///flask_story_app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)  # Bind SQLAlchemy db object to this Flask app
-stories = {
-    1: {'title': 'First note', 'text': 'This is my first note', 'status': 'Backlog'},
-    2: {'title': 'Second note', 'text': 'This is my second note', 'status': 'Backlog'},
-    3: {'title': 'Third note', 'text': 'This is my Third note', 'status': 'Backlog'}
-}
-a_user = {'name': 'Mohammad Azad', 'email': 'mogli@uncc.edu'}
+# stories = {
+#     1: {'title': 'First note', 'text': 'This is my first note', 'status': 'Backlog'},
+#     2: {'title': 'Second note', 'text': 'This is my second note', 'status': 'Backlog'},
+#     3: {'title': 'Third note', 'text': 'This is my Third note', 'status': 'Backlog'}
+# }
+# a_user = {'name': 'Mohammad Azad', 'email': 'mogli@uncc.edu'}
 company = 'TANG'
 
 
@@ -25,17 +27,22 @@ company = 'TANG'
 # get called. What it returns is what is shown as the web page
 @app.route('/')
 def index():
+    a_user = db.session.query(User).filter_by(email='mazad@uncc.edu')
     return render_template('index.html', user=a_user, company=company)
 
 
 @app.route('/dashboard')
 def get_stories():
+    a_user = db.session.query(User).filter_by(email='mazad@uncc.edu')
+    stories = db.session.query(Note).all()
     return render_template('dashboard.html', stories=stories, user=a_user, company=company)
 
 
 @app.route('/details/<story_id>')
 def get_details(story_id):
-    return render_template('story-detail.html', story=stories[int(story_id)], user=a_user, company=company)
+    a_user = db.session.query(User).filter_by(email='mazad@uncc.edu')
+    stories = db.session.query(Note).filter_by(id=story_id)
+    return render_template('story-detail.html', story=stories, user=a_user, company=company)
 
 
 @app.route('/new', methods=['GET', 'POST'])
@@ -45,10 +52,12 @@ def new_story():
         title = request.form['title']
         text = request.form['noteText']
         status = request.form['status']
-        ids = len(stories) + 1
-        stories[ids] = {'title': title, 'text': text, 'status': status}
+        story = Note(title, text, status)
+        db.session.add(story)
+        db.session.commit()
         return redirect(url_for('get_stories'))
     else:
+        a_user = db.session.query(User).filter_by(email='mazad@uncc.edu')
         return render_template('new.html', user=a_user, company=company)
 
 
