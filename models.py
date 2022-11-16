@@ -3,8 +3,8 @@ from database import db
 
 class Note(db.Model):
     id = db.Column("id", db.Integer, primary_key=True)
-    title = db.Column("title", db.String(100))
-    text = db.Column("text", db.String(400))
+    title = db.Column("title", db.String(200))
+    text = db.Column("text", db.String(1000))
     status = db.Column("status", db.String(20))
 
     def __init__(self, title, text, status):
