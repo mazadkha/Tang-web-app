@@ -16,7 +16,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 # Setup models
 with app.app_context():
-    db.create_all()   # run under the app context
+    db.create_all()  # run under the app context
 
 # stories = {
 #     1: {'title': 'First note', 'text': 'This is my first note', 'status': 'Backlog'},
@@ -46,11 +46,11 @@ def get_stories():
 @app.route('/details/<story_id>')
 def get_details(story_id):
     a_user = db.session.query(User).filter_by(email='mazad@uncc.edu').one()
-    stories = db.session.query(Note).filter_by(id=story_id).one()
-    return render_template('story-detail.html', story=stories, user=a_user, company=company)
+    my_story = db.session.query(Note).filter_by(id=story_id).one()
+    return render_template('story-detail.html', story=my_story, user=a_user, company=company)
 
 
-@app.route('/new', methods=['GET', 'POST'])
+@app.route('/dashboard/new', methods=['GET', 'POST'])
 def new_story():
     print('request method: ', request.method)
     if request.method == 'POST':
@@ -64,6 +64,39 @@ def new_story():
     else:
         a_user = db.session.query(User).filter_by(email='mazad@uncc.edu').one()
         return render_template('new.html', user=a_user, company=company)
+
+
+@app.route('/dashboard/edit/<story_id>', methods=['GET', 'POST'])
+def update(story_id):
+    # Check method used for request
+    if request.method == 'POST':
+        # Get the title data
+        title = request.form['title']
+        # Get the text data
+        text = request.form['noteText']
+        # Get the status
+        status = request.form['status']
+        story = db.session.query(Note).filter_by(id=story_id).one()
+        # Update the data
+        story.tittle = title
+        story.text = text
+        story.status = status
+
+        # Update the db
+        db.session.add(story)
+        db.session.commit()
+
+        # Getting back to dashboard after updating
+        return redirect(url_for('get_stories'))
+    else:
+        # Get request - show story to be updated
+        # retrieve user from db
+        a_user = db.session.query(User).filter_by(email='mazad@uncc.edu').one()
+
+        # retrieve story from db
+        my_story = db.session.query(Note).filter_by(id=story_id).one()
+
+        return render_template('new.html', story=my_story, user=a_user, company=company)
 
 
 app.run(host=os.getenv('IP', '127.0.0.1'), port=int(os.getenv('PORT', 5000)), debug=True)

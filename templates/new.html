@@ -42,31 +42,39 @@
   <div class="  w3-wide w3-padding w3-transparent"></div>
 
     <!-- Story detail -->
-<form action="new" method="post">
-  <div class="w3-container">
-    <div class="w3-container  w3-center  w3-card width:500px">
-      <h2 class="w3-wide">Add a Story</h2>
-      <p><input class="w3-input w3-border" type="text" name="title" placeholder="Feature title" ></p>
-      <p><textarea class="w3-input w3-border" rows="6" type="text" name="noteText" placeholder="Description" ></textarea></p>
-      <div class=" w3-container w3-left">
-        <p>Status of the story:</p>
+    {% if story %}
+      <form action="{{url_for('update', story_id = story.id)}}" method="post">
+    {% else %}
+      <form action="new" method="post">
+    {% endif %}
+        <div class="w3-container">
+          <div class="w3-container  w3-center  w3-card width:500px">
+            <h2 class="w3-wide">{% if story %} Update Story {% else %} Add a Story {% endif %}</h2>
+            <p><input class="w3-input w3-border" type="text" name="title" value = {% if story %} {{story.title}} {% else %} placeholder="Feature title" {% endif %}></p>
+            <p><textarea class="w3-input w3-border" rows="6" type="text" name="noteText"> {% if story %} {{story.text}} {% else %} placeholder="Description" {% endif %} </textarea></p>
+              <div class=" w3-container w3-left">
+              <p>Status of the story:</p>
+<!--{% if story.status == backlog %} checked {% endif %}-->
+              <input  {% if story.status == backlog %} checked {% endif %} class=" w3-left" type="radio" id="backlog" name="status" value="Backlog">
+              <label class=" w3-left w3-margin-left" for="backlog">Backlog</label><br>
 
-        <input class=" w3-left" type="radio" id="backlog" name="status" value="Backlog">
-        <label class=" w3-left w3-margin-left" for="backlog">Backlog</label><br>
+              <input {% if story.status == doing %} checked {% endif %} class=" w3-left" type="radio" id="doing" name="status" value="Doing">
+              <label class=" w3-left w3-margin-left" for="doing">Doing</label><br>
 
-        <input class=" w3-left" type="radio" id="doing" name="status" value="Doing">
-        <label class=" w3-left w3-margin-left" for="doing">Doing</label><br>
+              <input {% if story.status == done %} checked {% endif %} class=" w3-left" type="radio" id="done" name="status" value="Done">
+              <label class=" w3-left w3-margin-left" for="done">Done</label><br>
 
-        <input class=" w3-left" type="radio" id="done" name="status" value="Done">
-        <label class=" w3-left w3-margin-left" for="done">Done</label><br>
-
-      </div>
-      <div class="w3-container">
-        <button type="submit" class=" w3-button w3-padding-large w3-teal w3-margin-bottom " onclick="document.getElementById('subscribe').style.display='none'">Add</button>
-      </div>
-    </div>
-  </div>
-</form>
+            </div>
+            <div class="w3-container">
+                {% if story %}
+                    <button type="submit" class=" w3-button w3-padding-large w3-teal w3-margin-bottom " onclick="document.getElementById('subscribe').style.display='none'">UPDATE</button>
+                {% else %}
+                    <button type="submit" class=" w3-button w3-padding-large w3-teal w3-margin-bottom " onclick="document.getElementById('subscribe').style.display='none'">ADD</button>
+                {% endif %}
+            </div>
+          </div>
+        </div>
+      </form>
 
 <!-- End page content -->
 </div>
