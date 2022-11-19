@@ -13,6 +13,7 @@
   .top{position: fixed; width: 100%; top: 0px;}
   .toppad{padding-top: 50px}
   .botpad{padding-bottom: 60px}
+  div#frm *{display:inline}
 </style>
 </head>
 <body class="w3-light-grey w3-content" style="max-width:1600px">
@@ -53,26 +54,36 @@
     <!-- Backlog Table -->
     <div class="botpad w3-row-padding" style="margin:0 -16px">
       <div class="w3-third w3-margin-bottom">
-        <ul class="w3-ul w3-border w3-white w3-center w3-opacity w3-hover-opacity-off">
+        <ul class="w3-ul w3-border w3-white w3-center ">
           <li class="w3-black w3-xlarge w3-padding-32">Backlog</li>
           {% for story in stories %}
             {% if story.status == 'Backlog' %}
-              <li class="w3-padding-16">
-                <a href="{{url_for('get_details', story_id = story.id)}}">{{story.title}}</a>
-                <a href="{{url_for('update', story_id = story.id)}}" class="w3-padding"><i class="fa fa-solid fa-edit fa-fw w3-margin-right"></i></a>
+              <li class="w3-padding-16 w3-hover-opacity">
+                <div id="frm">
+                  <a href="{{url_for('get_details', story_id = story.id)}}" class="w3-padding" style="text-decoration:none">{{story.title}}</a>
+                  <a href="{{url_for('update', story_id = story.id)}}" style="text-decoration:none"><i class="fa fa-solid fa-edit fa-fw "></i></a>
+                  <form action="{{url_for('delete', story_id = story.id)}}" method="post">
+                    <button type="submit" style="color:red; border:grey; background:transparent;">x</button>
+                  </form>
+                </div>
               </li>
             {% endif %}
           {% endfor %}
         </ul>
       </div>
       <div class="w3-third w3-margin-bottom">
-        <ul class="w3-ul w3-border w3-white w3-center w3-opacity w3-hover-opacity-off">
+        <ul class="w3-ul w3-border w3-white w3-center ">
           <li class="w3-teal w3-xlarge w3-padding-32">Doing</li>
           {% for story in stories %}
             {% if story.status == 'Doing' %}
-              <li class="w3-padding-16">
-                <a href="{{url_for('get_details', story_id = story.id)}}">{{story.title}}</a>
-                <a href="{{url_for('update', story_id = story.id)}}" class="w3-padding"><i class="fa fa-solid fa-edit fa-fw w3-margin-right"></i></a>
+              <li class="w3-padding-16 w3-hover-opacity">
+                <div id="frm">
+                  <a href="{{url_for('get_details', story_id = story.id)}}" class="w3-padding" style="text-decoration:none">{{story.title}}</a>
+                  <a href="{{url_for('update', story_id = story.id)}}" style="text-decoration:none"><i class="fa fa-solid fa-edit fa-fw "></i></a>
+                  <form action="{{url_for('delete', story_id = story.id)}}" method="post">
+                    <button type="submit" style="color:red; border:grey; background:transparent;">x</button>
+                  </form>
+                </div>
               </li>
             {% endif %}
           {% endfor %}
@@ -80,13 +91,18 @@
       </div>
 
       <div class="w3-third">
-        <ul class="w3-ul w3-border w3-white w3-center w3-opacity w3-hover-opacity-off">
+        <ul class="w3-ul w3-border w3-white w3-center ">
           <li class="w3-black w3-xlarge w3-padding-32">Done</li>
           {% for story in stories %}
             {% if story.status == 'Done' %}
-              <li class="w3-padding-16">
-                <a href="{{url_for('get_details', story_id = story.id)}}">{{story.title}}</a>
-                <a href="{{url_for('update', story_id = story.id)}}" class="w3-padding"><i class="fa fa-solid fa-edit fa-fw w3-margin-right"></i></a>
+              <li class="w3-padding-16 w3-hover-opacity">
+                <div id="frm">
+                  <a href="{{url_for('get_details', story_id = story.id)}}" class="w3-padding" style="text-decoration:none">{{story.title}}</a>
+                  <a href="{{url_for('update', story_id = story.id)}}" style="text-decoration:none"><i class="fa fa-solid fa-edit fa-fw "></i></a>
+                  <form action="{{url_for('delete', story_id = story.id)}}" method="post">
+                    <button type="submit" style="color:red; border:grey; background:transparent;">x</button>
+                  </form>
+                </div>
               </li>
             {% endif %}
           {% endfor %}

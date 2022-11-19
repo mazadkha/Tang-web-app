@@ -52,13 +52,12 @@ def get_details(story_id):
 
 @app.route('/dashboard/new', methods=['GET', 'POST'])
 def new_story():
-    print('request method: ', request.method)
     if request.method == 'POST':
         title = request.form['title']
         text = request.form['noteText']
         status = request.form['status']
-        new_record = Note(title, text, status)
-        db.session.add(new_record)
+        story = Note(title, text, status)
+        db.session.add(story)
         db.session.commit()
         return redirect(url_for('get_stories'))
     else:
@@ -97,6 +96,16 @@ def update(story_id):
         my_story = db.session.query(Note).filter_by(id=story_id).one()
 
         return render_template('new.html', story=my_story, user=a_user, company=company)
+
+
+@app.route('/dashboard/delete/<story_id>', methods=['POST'])
+def delete(story_id):
+    # Retrieve story from database
+    my_story = db.session.query(Note).filter_by(id=story_id).one()
+    db.session.delete(my_story)
+    db.session.commit()
+
+    return redirect(url_for('get_stories'))
 
 
 app.run(host=os.getenv('IP', '127.0.0.1'), port=int(os.getenv('PORT', 5000)), debug=True)
