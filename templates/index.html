@@ -1,44 +1,108 @@
- <!DOCTYPE html>
- <html xmlns="http://www.w3.org/1999/html">
+<!DOCTYPE html>
+<html>
 <head>
-<title>{{company}}</title>
+<title>TANG</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
-  body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
-  .sub_div { position: fixed; width: 100%; bottom: 0px;}
+body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif;}
+body, html {
+  height: 100%;
+  color: #777;
+  line-height: 1.8;
+}
+
+/* Create a Parallax Effect */
+.bgimg-1, .bgimg-2, .bgimg-3 {
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+/* First image (Logo. Full height) */
+.bgimg-1 {
+  background-image: url('https://web-static.wrike.com/cdn-cgi/image/width=1760,format=auto,q=80/blog/content/uploads/2020/07/Why-Use-Wrike-for-HR-Project-Management-1.jpg?av=65bfa812891dbcc00ca11c02d19632b7');
+  min-height: 100%;
+}
+
+
+.w3-wide {letter-spacing: 10px;}
+.w3-hover-opacity {cursor: pointer;}
+
+/* Turn off parallax scrolling for tablets and phones */
+@media only screen and (max-device-width: 1600px) {
+  .bgimg-1 {
+    background-attachment: scroll;
+    min-height: 400px;
+  }
+}
 </style>
 </head>
 <body>
-<!-- Top Bar -->
-  <div class="w3-bar w3-white w3-wide w3-padding w3-card">
-    <a  class="w3-bar-item w3-animate-left"><b>{{company}}</b></a>
-    <!-- Float links to the right. Hide them on small screens -->
 
-    <div class="w3-right w3-hide-small">
-      <a class="w3-bar-item w3-center " href="{{ url_for('get_stories') }}">Dashboard</a>
-      <a class="w3-bar-item w3-center ">Welcome {{user.name}}</a>
-    </div>
+<!-- Navbar (sit on top) -->
+<div class="w3-top">
+  <div class="w3-bar" id="myNavbar">
+    <a class="w3-bar-item w3-button w3-hover-black w3-hide-medium w3-hide-large w3-right" href="javascript:void(0);" onclick="toggleFunction()" title="Toggle Navigation Menu">
+      <i class="fa fa-bars"></i>
+    </a>
+    <a href="{{ url_for('get_stories') }}" style="color:black; background:white;" class="w3-bar-item w3-button">DASHBOARD</a>
+    <a href="#" class="w3-bar-item w3-button w3-hide-small w3-right w3-hover-red">
+    </a>
+  </div>
+
+  <!-- Navbar on small screens -->
+  <div id="navDemo" class="w3-bar-block w3-white w3-hide w3-hide-large w3-hide-medium">
 
   </div>
-  <div class="  w3-wide w3-padding w3-transparent"></div>
-  <div class="  w3-wide w3-padding w3-transparent"></div>
+</div>
 
-<!-- Subscribe Modal -->
-  <div id="subscribe" class="w3-container" >
-    <div class="w3-container  w3-center  w3-card ">
-      <h2 class="w3-wide">Log in</h2>
-      <p>Login to enter the dashboard</p>
-      <p><input class="w3-input w3-border" type="text" placeholder="Enter e-mail"></p>
-      <p><input class="w3-input w3-border" type="text" placeholder="Password"></p>
-      <button type="button" class="w3-button w3-padding-large w3-teal w3-margin-bottom " onclick="document.getElementById('subscribe').style.display='none'">Sign In</button>
-    </div>
+<!-- First Parallax Image with Logo Text -->
+<div class="bgimg-1 w3-display-container w3-opacity-min" id="home">
+  <div class="w3-display-middle" style="white-space:nowrap;">
+    <span class="w3-center w3-padding-large w3-black w3-xlarge w3-wide w3-animate-opacity">{{company}}</span>
   </div>
+</div>
+
+<!-- Container (About Section) -->
+<div class="w3-content w3-container w3-padding-64" id="about">
+  <h3 class="w3-center">ABOUT US</h3>
+  <p>Tang is the visual tool that empowers your team to manage any type of project, workflow, or task tracking. Keep everyone accountable and never have to ask “who’s doing that” by adding members to cards for their projects and tasks. Doing and due dates go hand in hand. They're easy to set, hard to miss (with reminders!), and oh-so-satisfying to mark as “done.” No more digging through endless email chains to find attachments. Just drag and drop them onto a card so the right files stay with the right tasks. Your best tool to overpower overwhelming asks. Break big tasks into small ones, check things off the list, and watch that status bar go to 100% complete.</p>
+
+</div>
+</div>
   <div class="sub_div">
   <div class="w3-black w3-center w3-padding-24">Powered by <a title="Tang" target="_blank" >{{company}}</a></div>
-  </div>
+</div>
+
+
+<script>
+
+// Change style of navbar on scroll
+window.onscroll = function() {myFunction()};
+function myFunction() {
+    var navbar = document.getElementById("myNavbar");
+    if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+        navbar.className = "w3-bar" + " w3-card" + " w3-animate-top" + " w3-white";
+    } else {
+        navbar.className = navbar.className.replace(" w3-card w3-animate-top w3-white", "");
+    }
+}
+
+// Used to toggle the menu on small screens when clicking on the menu button
+function toggleFunction() {
+    var x = document.getElementById("navDemo");
+    if (x.className.indexOf("w3-show") == -1) {
+        x.className += " w3-show";
+    } else {
+        x.className = x.className.replace(" w3-show", "");
+    }
+}
+</script>
+
 </body>
 </html>
