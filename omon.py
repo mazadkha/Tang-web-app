@@ -36,8 +36,10 @@ company = 'TANG'
 # get called. What it returns is what is shown as the web page
 @app.route('/')
 def index():
-    a_user = db.session.query(User).filter_by(email='mazad@uncc.edu').one()
-    return render_template('index.html', user=a_user, company=company)
+    # Check if a user is saved in the session
+    if session.get('user'):
+        return render_template('index.html', user=session['user'], company=company)
+    return render_template('index.html', company=company)
 
 
 @app.route('/dashboard')
@@ -50,7 +52,7 @@ def get_stories():
 
         return render_template('dashboard.html', stories=all_stories, user=session['user'], company=company)
     else:
-        return redirect(url_for('login'))
+        return redirect(url_for('login'), company=company)
 
 
 @app.route('/details/<story_id>')
@@ -62,60 +64,75 @@ def get_details(story_id):
 
 @app.route('/dashboard/new', methods=['GET', 'POST'])
 def new_story():
-    if request.method == 'POST':
-        title = request.form['title']
-        text = request.form['noteText']
-        status = request.form['status']
-        story = Note(title, text, status)
-        db.session.add(story)
-        db.session.commit()
-        return redirect(url_for('get_stories'))
+    # Check if a user is saved in the session
+    if session.get('user'):
+        # Check method for request
+        if request.method == 'POST':
+            #  Get title data
+            title = request.form['title']
+            text = request.form['noteText']
+            status = request.form['status']
+            story = Note(title, text, status, session['user_id'])
+            db.session.add(story)
+            db.session.commit()
+            return redirect(url_for('get_stories'))
+        else:
+            # Get request - Show new note form
+            return render_template('new.html', user=session['user'], company=company)
     else:
-        a_user = db.session.query(User).filter_by(email='mazad@uncc.edu').one()
-        return render_template('new.html', user=a_user, company=company)
+        # User is not in the session, redirect to login
+        return redirect(url_for('login'))
 
 
 @app.route('/dashboard/edit/<story_id>', methods=['GET', 'POST'])
 def update(story_id):
-    # Check method used for request
-    if request.method == 'POST':
-        # Get the title data
-        title = request.form['title']
-        # Get the text data
-        text = request.form['noteText']
-        # Get the status
-        status = request.form['status']
-        story = db.session.query(Note).filter_by(id=story_id).one()
-        # Update the data
-        story.tittle = title
-        story.text = text
-        story.status = status
+    # Check if a user is saved in the session
+    if session.get('user'):
+        # Check method used for request
+        if request.method == 'POST':
+            # Get the title data
+            title = request.form['title']
+            # Get the text data
+            text = request.form['noteText']
+            # Get the status
+            status = request.form['status']
+            story = db.session.query(Note).filter_by(id=story_id).one()
+            # Update the data
+            story.tittle = title
+            story.text = text
+            story.status = status
 
-        # Update the db
-        db.session.add(story)
-        db.session.commit()
+            # Update the db
+            db.session.add(story)
+            db.session.commit()
 
-        # Getting back to dashboard after updating
-        return redirect(url_for('get_stories'))
+            # Getting back to dashboard after updating
+            return redirect(url_for('get_stories'))
+        else:
+            # Get request - show story to be updated
+
+            # retrieve story from db
+            my_story = db.session.query(Note).filter_by(id=story_id).one()
+
+            return render_template('new.html', story=my_story, user=session['user'], company=company)
     else:
-        # Get request - show story to be updated
-        # retrieve user from db
-        a_user = db.session.query(User).filter_by(email='mazad@uncc.edu').one()
-
-        # retrieve story from db
-        my_story = db.session.query(Note).filter_by(id=story_id).one()
-
-        return render_template('new.html', story=my_story, user=a_user, company=company)
+        # User is not in the session, redirect to login
+        return redirect(url_for('login'))
 
 
 @app.route('/dashboard/delete/<story_id>', methods=['POST'])
 def delete(story_id):
-    # Retrieve story from database
-    my_story = db.session.query(Note).filter_by(id=story_id).one()
-    db.session.delete(my_story)
-    db.session.commit()
+    # Check if a user is saved in the session
+    if session.get('user'):
+        # Retrieve story from database
+        my_story = db.session.query(Note).filter_by(id=story_id).one()
+        db.session.delete(my_story)
+        db.session.commit()
 
-    return redirect(url_for('get_stories'))
+        return redirect(url_for('get_stories'))
+    else:
+        # User is not in the session, redirect to login
+        return redirect(url_for('login'))
 
 
 @app.route('/register', methods=['POST', 'GET'])
@@ -156,7 +173,7 @@ def login():
             session['user'] = the_user.first_name
             session['user_id'] = the_user.id
             # render view
-            return redirect(url_for('get_notes'))
+            return redirect(url_for('get_stories'))
 
         # password check failed
         # set error message to alert user
