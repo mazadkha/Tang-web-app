@@ -52,6 +52,7 @@ body, html {
     </a>
     {% if user %}
     <a href="{{ url_for('get_stories') }}" style="color:black; background:white;" class="w3-bar-item w3-button">DASHBOARD</a>
+    <a href="{{ url_for('logout') }}" style="color:black; background:white;" class="w3-bar-item w3-button">LOGOUT</a>
     {% else %}
     <a href="{{ url_for('login') }}" style="color:black; background:white;" class="w3-bar-item w3-button">Login</a>
     {% endif %}

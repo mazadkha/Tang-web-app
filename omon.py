@@ -57,9 +57,13 @@ def get_stories():
 
 @app.route('/details/<story_id>')
 def get_details(story_id):
-    a_user = db.session.query(User).filter_by(email='mazad@uncc.edu').one()
-    my_story = db.session.query(Note).filter_by(id=story_id).one()
-    return render_template('story-detail.html', story=my_story, user=a_user, company=company)
+    # Check if a user is saved in the session
+    if session.get('user'):
+        # Retrieve story from database as per the story id
+        my_story = db.session.query(Note).filter_by(id=story_id).one()
+        return render_template('story-detail.html', story=my_story, user=session['user'], company=company)
+    else:
+        return redirect(url_for('login'), company=company)
 
 
 @app.route('/dashboard/new', methods=['GET', 'POST'])
@@ -182,6 +186,15 @@ def login():
     else:
         # form did not validate or GET request
         return render_template("login.html", form=login_form, company=company)
+
+
+@app.route('/logout')
+def logout():
+    # check if a user is saved in session
+    if session.get('user'):
+        session.clear()
+
+    return redirect(url_for('index'))
 
 
 app.run(host=os.getenv('IP', '127.0.0.1'), port=int(os.getenv('PORT', 5000)), debug=True)

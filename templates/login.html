@@ -16,7 +16,7 @@
 <body>
 <!-- Top Bar -->
   <div class="w3-bar w3-white w3-wide w3-padding w3-card">
-    <a  class="w3-bar-item w3-animate-left"><b>{{company}}</b></a>
+    <a  href="{{ url_for('index')}}" style="text-decoration: none;" class="w3-bar-item w3-animate-left"><b>{{company}}</b></a>
     <!-- Float links to the right. Hide them on small screens -->
 
 
@@ -50,6 +50,9 @@
         </div>
         {{ form.submit }}
       </form>
+        <div class="  w3-wide w3-padding w3-transparent">OR</div>
+        <p>Create an account</p>
+        <a  href="{{ url_for('register') }}" class=" w3-button w3-padding w3-teal w3-margin-bottom ">Register</a>
     </div>
   </div>
   <div class="sub_div">
