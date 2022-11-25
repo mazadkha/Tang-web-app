@@ -8,7 +8,7 @@ from flask import request
 from database import db
 from models import Note as Note
 from models import User as User
-from forms import RegisterForm
+from forms import RegisterForm, LoginForm
 import bcrypt
 
 app = Flask(__name__)  # create an app
@@ -141,6 +141,30 @@ def register():
         return redirect(url_for('get_stories'))
 
     return render_template('register.html', form=form, company=company)
+
+
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    login_form = LoginForm()
+    # validate_on_submit only validates using POST
+    if login_form.validate_on_submit():
+        # we know user exists. We can use one()
+        the_user = db.session.query(User).filter_by(email=request.form['email']).one()
+        # user exists check password entered matches stored password
+        if bcrypt.checkpw(request.form['password'].encode('utf-8'), the_user.password):
+            # password match add user info to session
+            session['user'] = the_user.first_name
+            session['user_id'] = the_user.id
+            # render view
+            return redirect(url_for('get_notes'))
+
+        # password check failed
+        # set error message to alert user
+        login_form.password.errors = ["Incorrect username or password."]
+        return render_template("login.html", form=login_form, company=company)
+    else:
+        # form did not validate or GET request
+        return render_template("login.html", form=login_form, company=company)
 
 
 app.run(host=os.getenv('IP', '127.0.0.1'), port=int(os.getenv('PORT', 5000)), debug=True)
