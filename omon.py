@@ -3,17 +3,21 @@
 # imports
 import os  # os is used to get environment variables IP & PORT
 from flask import Flask, redirect, url_for  # Flask is the web app that we will customize
-from flask import render_template
+from flask import render_template, session
 from flask import request
 from database import db
 from models import Note as Note
 from models import User as User
+from forms import RegisterForm
+import bcrypt
 
 app = Flask(__name__)  # create an app
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///flask_story_app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 #  Bind SQLAlchemy db object to this Flask app
 db.init_app(app)
+# configure the secret key that will be used to by the app to secure session data
+app.config['SECRET_KEY'] = 'SE3155'
 # Setup models
 with app.app_context():
     db.create_all()  # run under the app context
@@ -38,9 +42,15 @@ def index():
 
 @app.route('/dashboard')
 def get_stories():
-    a_user = db.session.query(User).filter_by(email='mazad@uncc.edu').one()
-    all_stories = db.session.query(Note).all()
-    return render_template('dashboard.html', stories=all_stories, user=a_user, company=company)
+    # Retrieve user from database
+    # Check if a user is saved in the session
+    if session.get('user'):
+        # Retrieve stories from database
+        all_stories = db.session.query(Note).filter_by(user_id=session['user_id']).all()
+
+        return render_template('dashboard.html', stories=all_stories, user=session['user'], company=company)
+    else:
+        return redirect(url_for('login'))
 
 
 @app.route('/details/<story_id>')
@@ -106,6 +116,31 @@ def delete(story_id):
     db.session.commit()
 
     return redirect(url_for('get_stories'))
+
+
+@app.route('/register', methods=['POST', 'GET'])
+def register():
+    form = RegisterForm()
+
+    if request.method == 'POST' and form.validate_on_submit():
+        # Salt and hash password
+        h_password = bcrypt.hashpw(
+            request.form['password'].encode('utf-8'), bcrypt.gensalt())
+        # Get entered use data
+        first_name = request.form['firstname']
+        last_name = request.form['lastname']
+        # Create user model
+        new_user = User(first_name, last_name, request.form['email'], h_password)
+        # Add user to the database
+        db.session.add(new_user)
+        db.session.commit()
+        # Save the user's name to the session
+        session['user'] = first_name
+        session['user_id'] = new_user.id  # accessing the id value from the newly added user
+        # Show user's dashboard view
+        return redirect(url_for('get_stories'))
+
+    return render_template('register.html', form=form, company=company)
 
 
 app.run(host=os.getenv('IP', '127.0.0.1'), port=int(os.getenv('PORT', 5000)), debug=True)
