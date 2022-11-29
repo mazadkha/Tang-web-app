@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 <style>
   body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
   .sub_div { position: fixed; width: 100%; bottom: 0px;}
@@ -45,6 +46,26 @@
     <h5><b>Status of the story: {{story.status}}</b></h5>
 
     <hr>
+    <!--View for the comment-->
+    {% if story.comments %}
+      {% if story.comments|length > 0 %}
+        <h2>Comments</h2>
+        <ul>
+        {% for comment in story.comments %}
+          <li>{{ comment.content }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endif %}
+    <form action="{{ url_for('new_comment', story_id=story.id) }}" method="post">
+      <div class="formwrapper">
+        <h2 class="title">Add a comment</h2>
+        <div class="form-field">
+          {{ form.comment.label }} <br/> {{ form.comment }}
+        </div>
+        {{ form.submit }}
+      </div>
+    </form>
 </div>
 
 <!-- End page content -->
@@ -64,6 +85,5 @@ function w3_close() {
     document.getElementById("myOverlay").style.display = "none";
 }
 </script>
-
 </body>
 </html>
