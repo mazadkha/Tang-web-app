@@ -6,9 +6,9 @@ from flask import Flask, redirect, url_for  # Flask is the web app that we will 
 from flask import render_template, session
 from flask import request
 from database import db
-from models import Note as Note
+from models import Note as Note, Comment as Comment
 from models import User as User
-from forms import RegisterForm, LoginForm
+from forms import RegisterForm, LoginForm, CommentForm
 import bcrypt
 
 app = Flask(__name__)  # create an app
@@ -61,7 +61,9 @@ def get_details(story_id):
     if session.get('user'):
         # Retrieve story from database as per the story id
         my_story = db.session.query(Note).filter_by(id=story_id).one()
-        return render_template('story-detail.html', story=my_story, user=session['user'], company=company)
+        #  Crete a comment form object
+        form = CommentForm()
+        return render_template('story-detail.html', story=my_story, user=session['user'], company=company, form=form)
     else:
         return redirect(url_for('login'), company=company)
 
@@ -84,7 +86,7 @@ def new_story():
             # Get request - Show new note form
             return render_template('new.html', user=session['user'], company=company)
     else:
-        # User is not in the session, redirect to login
+        # User is not in the session, redirect to log in
         return redirect(url_for('login'))
 
 
@@ -195,6 +197,24 @@ def logout():
         session.clear()
 
     return redirect(url_for('index'))
+
+
+@app.route('/dashboard/<story_id>/comment', methods=['POST'])
+def new_comment(story_id):
+    if session.get('user'):
+        comment_form = CommentForm()
+        # validate_on_submit only validates using POST
+        if comment_form.validate_on_submit():
+            # get comment data
+            comment_text = request.form['comment']
+            new_record = Comment(comment_text, int(story_id), session['user_id'])
+            db.session.add(new_record)
+            db.session.commit()
+
+        return redirect(url_for('get_details', story_id=story_id))
+
+    else:
+        return redirect(url_for('login'))
 
 
 app.run(host=os.getenv('IP', '127.0.0.1'), port=int(os.getenv('PORT', 5000)), debug=True)

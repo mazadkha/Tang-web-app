@@ -28,7 +28,7 @@
     <a href="{{ url_for('index') }}" onclick="w3_close()" class="w3-bar-item w3-button w3-padding w3-text-teal"><i class="fa fa-user fa-fw w3-margin-right"></i>HOME</a>
     <a href="{{url_for('get_stories')}}" onclick="w3_close()" class="w3-bar-item w3-button w3-padding"><i class="fa fa-solid fa-list fa-fw w3-margin-right"></i>STORYBOARD</a>
     <a href="{{url_for('new_story')}}" onclick="w3_close()" class="w3-bar-item w3-button w3-padding"><i class="fa fa-solid fa-plus fa-fw w3-margin-right"></i>ADD NEW</a>
-      <a href="{{ url_for('logout') }}" onclick="w3_close()" class="w3-bar-item w3-button w3-padding"><i class="fa fa-solid fa-sign-out fa-fw w3-margin-right"></i>Logout</a>
+    <a href="{{ url_for('logout') }}" onclick="w3_close()" class="w3-bar-item w3-button w3-padding"><i class="fa fa-solid fa-sign-out fa-fw w3-margin-right"></i>Logout</a>
   </div>
 </nav>
 
@@ -62,13 +62,13 @@
               <div class=" w3-container w3-left">
               <p>Status of the story:</p>
               {% if story %}
-              <input  {% if story.status == 'Backlog' %} checked {% endif %} class=" w3-left" type="radio" id="backlog" name="status" value="Backlog">
+              <input  {% if story.status =='Backlog' %} checked {% endif %} class=" w3-left" type="radio" id="backlog" name="status" value="Backlog">
               <label class=" w3-left w3-margin-left" for="backlog">Backlog</label><br>
 
-              <input {% if story.status == 'Doing' %} checked {% endif %} class=" w3-left" type="radio" id="doing" name="status" value="Doing">
+              <input {% if story.status =='Doing' %} checked {% endif %} class=" w3-left" type="radio" id="doing" name="status" value="Doing">
               <label class=" w3-left w3-margin-left" for="doing">Doing</label><br>
 
-              <input {% if story.status == 'Done' %} checked {% endif %} class=" w3-left" type="radio" id="done" name="status" value="Done">
+              <input {% if story.status =='Done' %} checked {% endif %} class=" w3-left" type="radio" id="done" name="status" value="Done">
               <label class=" w3-left w3-margin-left" for="done">Done</label><br>
               {% else %}
                 <input  class=" w3-left" type="radio" id="backlog" name="status" value="Backlog">
