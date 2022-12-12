@@ -10,6 +10,7 @@ class Note(db.Model):
     # Can create a foreign key; Referencing the id variable in the user class, so that is why it is lower case v
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     comments = db.relationship("Comment", backref="note", cascade="all, delete-orphan", lazy=True)
+    subscribers = db.relationship("Subscriber", backref="note", cascade="all, delete-orphan", lazy=True)
 
     def __init__(self, title, text, status, user_id):
         self.title = title
@@ -48,3 +49,15 @@ class Comment(db.Model):
         self.content = content
         self.note_id = note_id
         self.user_id = user_id
+
+
+class Subscriber(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date_posted = db.Column(db.DateTime, nullable=False)
+    email = db.Column(db.VARCHAR, nullable=False)
+    note_id = db.Column(db.Integer, db.ForeignKey("note.id"), nullable=False)
+
+    def __init__(self, email, note_id):
+        self.date_posted = datetime.date.today()
+        self.email = email
+        self.note_id = note_id

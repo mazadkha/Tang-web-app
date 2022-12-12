@@ -58,3 +58,18 @@ class CommentForm(FlaskForm):
     comment = TextAreaField('Comment', validators=[Length(min=1)])
 
     submit = SubmitField('Add Comment')
+
+
+class SubscriberForm(FlaskForm):
+    class Meta:
+        csrf = False
+
+    email = StringField('Email', [
+        Email(message='Not a valid email address.'),
+        DataRequired()])
+
+    submit = SubmitField('Add Subscriber')
+
+    def validate_email(self, field):
+        if db.session.query(User).filter_by(email=field.data).count() == 0:
+            raise ValidationError('Incorrect username or password.')

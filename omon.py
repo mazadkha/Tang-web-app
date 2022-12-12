@@ -6,9 +6,9 @@ from flask import Flask, redirect, url_for  # Flask is the web app that we will 
 from flask import render_template, session
 from flask import request
 from database import db
-from models import Note as Note, Comment as Comment
+from models import Note as Note, Comment as Comment, Subscriber as Subscriber
 from models import User as User
-from forms import RegisterForm, LoginForm, CommentForm
+from forms import RegisterForm, LoginForm, CommentForm, SubscriberForm
 import bcrypt
 
 app = Flask(__name__)  # create an app
@@ -46,9 +46,15 @@ def index():
 def get_stories():
     # Retrieve user from database
     # Check if a user is saved in the session
+    session_user_email = db.session.query(User.email).filter_by(id=session['user_id']).all()[0][0]
     if session.get('user'):
         # Retrieve stories from database
         all_stories = db.session.query(Note).filter_by(user_id=session['user_id']).all()
+        # Retrieve Subscriber stories from database
+        subscriber_story_ids = db.session.query(Subscriber.note_id).filter_by(email=session_user_email).all()
+        if subscriber_story_ids:
+            for sub_id in subscriber_story_ids:
+                all_stories.append(db.session.query(Note).filter_by(id=sub_id[0]).one())
 
         return render_template('dashboard.html', stories=all_stories, user=session['user'], company=company)
     else:
@@ -61,9 +67,11 @@ def get_details(story_id):
     if session.get('user'):
         # Retrieve story from database as per the story id
         my_story = db.session.query(Note).filter_by(id=story_id).one()
+        # Crete a subscriber form object
+        formSubs = SubscriberForm()
         #  Crete a comment form object
         form = CommentForm()
-        return render_template('story-detail.html', story=my_story, user=session['user'], company=company, form=form)
+        return render_template('story-detail.html', story=my_story, user=session['user'], company=company, form=form, formSubs=formSubs)
     else:
         return redirect(url_for('login'), company=company)
 
@@ -104,7 +112,7 @@ def update(story_id):
             status = request.form['status']
             story = db.session.query(Note).filter_by(id=story_id).one()
             # Update the data
-            story.tittle = title
+            story.title = title
             story.text = text
             story.status = status
 
@@ -122,7 +130,7 @@ def update(story_id):
 
             return render_template('new.html', story=my_story, user=session['user'], company=company)
     else:
-        # User is not in the session, redirect to login
+        # User is not in the session, redirect to log in
         return redirect(url_for('login'))
 
 
@@ -212,6 +220,28 @@ def new_comment(story_id):
             db.session.commit()
 
         return redirect(url_for('get_details', story_id=story_id))
+
+    else:
+        return redirect(url_for('login'))
+
+
+@app.route('/dashboard/<story_id>/subscriber', methods=['POST'])
+def subscriber(story_id):
+    if session.get('user'):
+        subscriber_form = SubscriberForm()
+        # validate_on_submit only validates using POST
+        if subscriber_form.validate_on_submit():
+            # get comment data
+            subscriber_email = request.form['email']
+
+            if db.session.query(User).filter_by(email=subscriber_email).one():
+                new_record = Subscriber(subscriber_email, int(story_id))
+                db.session.add(new_record)
+                db.session.commit()
+
+        subscriber_form.email.errors = ["No such email found"]
+
+        return redirect(url_for('get_details', form=subscriber_form, story_id=story_id))
 
     else:
         return redirect(url_for('login'))
