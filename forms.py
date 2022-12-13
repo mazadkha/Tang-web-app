@@ -1,11 +1,12 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField
+from flask_wtf.file import FileAllowed, FileField
 from wtforms.validators import Length, Regexp, DataRequired, EqualTo, Email
 from wtforms import ValidationError
 from models import User
-from database import db
+from database import db 
 
-
+# This form is an abstraction and import and not associated with the user.
 class RegisterForm(FlaskForm):
     class Meta:
         csrf = False
@@ -56,5 +57,15 @@ class CommentForm(FlaskForm):
         csrf = False
 
     comment = TextAreaField('Comment', validators=[Length(min=1)])
-
     submit = SubmitField('Add Comment')
+
+
+class ImageForm(FlaskForm):
+    class Meta:
+        csrf = False
+    
+    image = FileField('Image', validators=[FileAllowed(['jpg','png', 'jpeg','gif'])])
+    submit = SubmitField('Add Image')
+    
+       
+

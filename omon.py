@@ -5,19 +5,30 @@ import os  # os is used to get environment variables IP & PORT
 from flask import Flask, redirect, url_for  # Flask is the web app that we will customize
 from flask import render_template, session
 from flask import request
-from database import db
+from database import db 
+from werkzeug.utils import secure_filename
 from models import Note as Note, Comment as Comment
 from models import User as User
-from forms import RegisterForm, LoginForm, CommentForm
+from forms import RegisterForm, LoginForm, CommentForm, ImageForm
 import bcrypt
+
+UPLOAD_FOLDER = '/path/to/the/uploads'
+ALLOWED_EXTENSIONS = { 'png', 'jpg', 'jpeg', 'gif'}
+
 
 app = Flask(__name__)  # create an app
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///flask_story_app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = 'SE3155'
 #  Bind SQLAlchemy db object to this Flask app
+
+
+
 db.init_app(app)
 # configure the secret key that will be used to by the app to secure session data
-app.config['SECRET_KEY'] = 'SE3155'
+# key that it needs to unlock and access the data it gets there.
+
+#UPLOAD_FOLDER = '/Users/sashankpyndi/ITSC3155/'
 # Setup models
 with app.app_context():
     db.create_all()  # run under the app context
@@ -37,8 +48,10 @@ company = 'TANG'
 @app.route('/')
 def index():
     # Check if a user is saved in the session
+    # Checks if the user is logged in
+    # Session has the currently logged in user information.
     if session.get('user'):
-        return render_template('index.html', user=session['user'], company=company)
+      return render_template('index.html', user=session['user'], company=company)
     return render_template('index.html', company=company)
 
 
@@ -48,6 +61,7 @@ def get_stories():
     # Check if a user is saved in the session
     if session.get('user'):
         # Retrieve stories from database
+        # all entries of the query
         all_stories = db.session.query(Note).filter_by(user_id=session['user_id']).all()
 
         return render_template('dashboard.html', stories=all_stories, user=session['user'], company=company)
@@ -60,9 +74,10 @@ def get_details(story_id):
     # Check if a user is saved in the session
     if session.get('user'):
         # Retrieve story from database as per the story id
+        # only be one entry for the query
         my_story = db.session.query(Note).filter_by(id=story_id).one()
-        #  Crete a comment form object
         form = CommentForm()
+        # Create a comment form object
         return render_template('story-detail.html', story=my_story, user=session['user'], company=company, form=form)
     else:
         return redirect(url_for('login'), company=company)
@@ -75,12 +90,19 @@ def new_story():
         # Check method for request
         if request.method == 'POST':
             #  Get title data
+            # gets the title from the form object.
             title = request.form['title']
+            # gets the text from the form
+           
             text = request.form['noteText']
+            # gets the status form
             status = request.form['status']
+             
+            # associatated with the session is the currently login user. The name and id form user datatable.
+            # creates note based on the user input of the form
             story = Note(title, text, status, session['user_id'])
             db.session.add(story)
-            db.session.commit()
+            db.session.commit() 
             return redirect(url_for('get_stories'))
         else:
             # Get request - Show new note form
@@ -102,9 +124,10 @@ def update(story_id):
             text = request.form['noteText']
             # Get the status
             status = request.form['status']
+            # get the thing with story id passed in. One story with this id. Only one entry with this particular story id.
             story = db.session.query(Note).filter_by(id=story_id).one()
-            # Update the data
-            story.tittle = title
+            # Update the data of each to the new note
+            story.title = title
             story.text = text
             story.status = status
 
@@ -148,7 +171,7 @@ def register():
     if request.method == 'POST' and form.validate_on_submit():
         # Salt and hash password
         h_password = bcrypt.hashpw(
-            request.form['password'].encode('utf-8'), bcrypt.gensalt())
+        request.form['password'].encode('utf-8'), bcrypt.gensalt())
         # Get entered use data
         first_name = request.form['firstname']
         last_name = request.form['lastname']
@@ -207,15 +230,29 @@ def new_comment(story_id):
         if comment_form.validate_on_submit():
             # get comment data
             comment_text = request.form['comment']
-            new_record = Comment(comment_text, int(story_id), session['user_id'])
+            new_record = Comment(comment_text, int(story_id), session['user_id']) 
             db.session.add(new_record)
             db.session.commit()
 
         return redirect(url_for('get_details', story_id=story_id))
-
     else:
         return redirect(url_for('login'))
 
+ #def allowed_file(filename):
+    #return '.' in filename and 
+     # filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+      #@app.route('/dashboard/<story_id>/image', methods=['POST'])
+#def upload_image(story_id):
+      
+    #if session.get('user'):
+     #validate_on_submit only validates using POST
+       #image_form = ImageForm()
+        #if image_form.validate_on_submit():
+          #image = request.files['image']
+           
+       #return redirect(url_for('get_details',story_id=story_id)) 
+    #else:
+        #return redirect(url_for('login')) 
 
 app.run(host=os.getenv('IP', '127.0.0.1'), port=int(os.getenv('PORT', 5000)), debug=True)
 

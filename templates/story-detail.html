@@ -65,9 +65,15 @@
         </div>
         {{ form.submit }}
       </div>
+    </form><br><br><br>
+    <form action="{urlfor('upload_Image', story_id=story.id) }}" enctype="multipart/for-data" method ="post">
+      <div class = "formwrapper">
+       <h2> Upload Image</h2>
+       <input type= "file" id= "myFile" name="filename">
+       <input type= "submit" value = "Upload">
+      </div>
     </form>
-</div>
-
+</div> 
 <!-- End page content -->
 </div>
   <div class="sub_div">

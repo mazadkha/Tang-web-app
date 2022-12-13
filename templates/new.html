@@ -54,15 +54,17 @@
           {% if story %}
             <p><input class="w3-input w3-border" type="text" name="title" value ={{story.title}}></p>
             <p><textarea class="w3-input w3-border" rows="6" type="text" name="noteText">{{story.text}}</textarea></p>
+
           {% else %}
             <p><input class="w3-input w3-border" type="text" name="title" placeholder="Feature title"></p>
             <p><textarea class="w3-input w3-border" rows="6" type="text" name="noteText" placeholder="Description"></textarea></p>
+            
           {% endif %}
 
               <div class=" w3-container w3-left">
               <p>Status of the story:</p>
               {% if story %}
-              <input  {% if story.status =='Backlog' %} checked {% endif %} class=" w3-left" type="radio" id="backlog" name="status" value="Backlog">
+              <input {% if story.status =='Backlog' %} checked {% endif %} class=" w3-left" type="radio" id="backlog" name="status" value="Backlog">
               <label class=" w3-left w3-margin-left" for="backlog">Backlog</label><br>
 
               <input {% if story.status =='Doing' %} checked {% endif %} class=" w3-left" type="radio" id="doing" name="status" value="Doing">
@@ -71,7 +73,7 @@
               <input {% if story.status =='Done' %} checked {% endif %} class=" w3-left" type="radio" id="done" name="status" value="Done">
               <label class=" w3-left w3-margin-left" for="done">Done</label><br>
               {% else %}
-                <input  class=" w3-left" type="radio" id="backlog" name="status" value="Backlog">
+              <input  class=" w3-left" type="radio" id="backlog" name="status" value="Backlog">
               <label class=" w3-left w3-margin-left" for="backlog">Backlog</label><br>
 
               <input class=" w3-left" type="radio" id="doing" name="status" value="Doing">
@@ -85,13 +87,13 @@
                 {% if story %}
                     <button type="submit" class=" w3-button w3-padding-large w3-teal w3-margin-bottom " onclick="document.getElementById('subscribe').style.display='none'">UPDATE</button>
                 {% else %}
-                    <button type="submit" class=" w3-button w3-padding-large w3-teal w3-margin-bottom " onclick="document.getElementById('subscribe').style.display='none'">ADD</button>
+                    <button type="submit" class=" w3-button w3-padding-large w3-teal w3-margin-bottom " onclick="document.getElementById(']-13qibe').style.display='none'">ADD</button>
                 {% endif %}
             </div>
           </div>
         </div>
       </form>
-
+      
 <!-- End page content -->
 </div>
   <div class="sub_div">
