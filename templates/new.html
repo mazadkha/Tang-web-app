@@ -44,15 +44,15 @@
 
     <!-- Story detail -->
     {% if story %}
-      <form action="{{url_for('update', story_id = story.id)}}" method="post">
+      <form action="{{url_for('update', story_id = story.id)}}" method="post" enctype="multipart/form-data">
     {% else %}
-      <form action="new" method="post">
+      <form action="new" method="post" enctype="multipart/form-data">
     {% endif %}
         <div class="w3-container">
           <div class="w3-container  w3-center  w3-card width:500px">
             <h2 class="w3-wide">{% if story %} Update Story {% else %} Add a Story {% endif %}</h2>
           {% if story %}
-            <p><input class="w3-input w3-border" type="text" name="title" value ={{story.title}}></p>
+            <p><input class="w3-input w3-border" type="text" name="title" value="{{story.title}}"></p>
             <p><textarea class="w3-input w3-border" rows="6" type="text" name="noteText">{{story.text}}</textarea></p>
           {% else %}
             <p><input class="w3-input w3-border" type="text" name="title" placeholder="Feature title"></p>
@@ -80,7 +80,19 @@
               <input class=" w3-left" type="radio" id="done" name="status" value="Done">
               <label class=" w3-left w3-margin-left" for="done">Done</label><br>
               {% endif %}
+              </br>
+                <div class="form-group">
+                  {{ attach.picture.label() }}: {{ attach.picture() }}
+                    {% if attach.picture.errors %}
+                        {% for error in attach.picture.errors %}
+                        <span class="error">{{ error }}</span></br>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                  </br>
+
             </div>
+
             <div class="w3-container">
                 {% if story %}
                     <button type="submit" class=" w3-button w3-padding-large w3-teal w3-margin-bottom " onclick="document.getElementById('subscribe').style.display='none'">UPDATE</button>

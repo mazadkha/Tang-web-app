@@ -7,14 +7,17 @@ class Note(db.Model):
     title = db.Column("title", db.String(200))
     text = db.Column("text", db.String(1000))
     status = db.Column("status", db.String(20))
+    image_file = db.Column(db.String(20), nullable=False, default='img_snow.jpg')
     # Can create a foreign key; Referencing the id variable in the user class, so that is why it is lower case v
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     comments = db.relationship("Comment", backref="note", cascade="all, delete-orphan", lazy=True)
+    subscribers = db.relationship("Subscriber", backref="note", cascade="all, delete-orphan", lazy=True)
 
-    def __init__(self, title, text, status, user_id):
+    def __init__(self, title, text, status, image_file, user_id):
         self.title = title
         self.text = text
         self.status = status
+        self.image_file = image_file
         self.user_id = user_id
 
 
@@ -48,3 +51,15 @@ class Comment(db.Model):
         self.content = content
         self.note_id = note_id
         self.user_id = user_id
+
+
+class Subscriber(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date_posted = db.Column(db.DateTime, nullable=False)
+    email = db.Column(db.VARCHAR, nullable=False)
+    note_id = db.Column(db.Integer, db.ForeignKey("note.id"), nullable=False)
+
+    def __init__(self, email, note_id):
+        self.date_posted = datetime.date.today()
+        self.email = email
+        self.note_id = note_id
