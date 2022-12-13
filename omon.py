@@ -2,13 +2,15 @@
 
 # imports
 import os  # os is used to get environment variables IP & PORT
+import secrets
+
 from flask import Flask, redirect, url_for  # Flask is the web app that we will customize
 from flask import render_template, session
 from flask import request
 from database import db
 from models import Note as Note, Comment as Comment, Subscriber as Subscriber
 from models import User as User
-from forms import RegisterForm, LoginForm, CommentForm, SubscriberForm
+from forms import RegisterForm, LoginForm, CommentForm, SubscriberForm, AttachmentForm
 import bcrypt
 
 app = Flask(__name__)  # create an app
@@ -65,34 +67,54 @@ def get_stories():
 def get_details(story_id):
     # Check if a user is saved in the session
     if session.get('user'):
+        # Retrieve image
+        image = db.session.query(Note.image_file).filter_by(id=story_id).one()[0]
+        print(image)
+        image_file = url_for('static', filename='images/' + image)
         # Retrieve story from database as per the story id
         my_story = db.session.query(Note).filter_by(id=story_id).one()
         # Crete a subscriber form object
         formSubs = SubscriberForm()
         #  Crete a comment form object
         form = CommentForm()
-        return render_template('story-detail.html', story=my_story, user=session['user'], company=company, form=form, formSubs=formSubs)
+        return render_template('story-detail.html', story=my_story, user=session['user'], company=company, form=form,
+                               formSubs=formSubs, image_file=image_file)
     else:
         return redirect(url_for('login'), company=company)
+
+
+def save_picture(form_picture):
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(form_picture.filename)
+    picture_fn = random_hex + f_ext
+    picture_path = os.path.join(app.root_path, 'static/images', picture_fn)
+    form_picture.save(picture_path)
+
+    return picture_fn
 
 
 @app.route('/dashboard/new', methods=['GET', 'POST'])
 def new_story():
     # Check if a user is saved in the session
+    attach = AttachmentForm()
     if session.get('user'):
         # Check method for request
         if request.method == 'POST':
+            if attach.picture.data:
+                picture_file = save_picture(attach.picture.data)
+            else:
+                picture_file = None
             #  Get title data
             title = request.form['title']
             text = request.form['noteText']
             status = request.form['status']
-            story = Note(title, text, status, session['user_id'])
+            story = Note(title, text, status, picture_file, session['user_id'])
             db.session.add(story)
             db.session.commit()
             return redirect(url_for('get_stories'))
         else:
             # Get request - Show new note form
-            return render_template('new.html', user=session['user'], company=company)
+            return render_template('new.html', attach=attach, user=session['user'], company=company)
     else:
         # User is not in the session, redirect to log in
         return redirect(url_for('login'))
@@ -100,21 +122,29 @@ def new_story():
 
 @app.route('/dashboard/edit/<story_id>', methods=['GET', 'POST'])
 def update(story_id):
+    attach = AttachmentForm()
     # Check if a user is saved in the session
     if session.get('user'):
         # Check method used for request
         if request.method == 'POST':
+            if attach.picture.data:
+                picture_file = save_picture(attach.picture.data)
+            else:
+                picture_file = Note.image_file
             # Get the title data
             title = request.form['title']
             # Get the text data
             text = request.form['noteText']
             # Get the status
             status = request.form['status']
+            # Get the picture
+
             story = db.session.query(Note).filter_by(id=story_id).one()
             # Update the data
             story.title = title
             story.text = text
             story.status = status
+            story.image_file = picture_file
 
             # Update the db
             db.session.add(story)
@@ -128,7 +158,7 @@ def update(story_id):
             # retrieve story from db
             my_story = db.session.query(Note).filter_by(id=story_id).one()
 
-            return render_template('new.html', story=my_story, user=session['user'], company=company)
+            return render_template('new.html', story=my_story, user=session['user'], company=company, attach=attach)
     else:
         # User is not in the session, redirect to log in
         return redirect(url_for('login'))

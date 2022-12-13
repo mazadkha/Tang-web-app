@@ -1,4 +1,5 @@
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField, FileAllowed
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField
 from wtforms.validators import Length, Regexp, DataRequired, EqualTo, Email
 from wtforms import ValidationError
@@ -72,4 +73,12 @@ class SubscriberForm(FlaskForm):
 
     def validate_email(self, field):
         if db.session.query(User).filter_by(email=field.data).count() == 0:
-            raise ValidationError('Incorrect username or password.')
+            raise ValidationError('Incorrect username')
+
+
+class AttachmentForm(FlaskForm):
+    class Meta:
+        csrf = False
+
+    picture = FileField('Upload Image file',
+                        validators=[FileAllowed(['jpg', 'png'])])

@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='image.css') }}">
 <style>
   body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
   .sub_div { position: fixed; width: 100%; bottom: 0px;}
@@ -44,6 +45,16 @@
     <p>{{story.text}}</p>
     <h6><b>Status of the story: </b><b style="color:teal">{{story.status}}</b></h6>
 
+<!--    Image Display  -->
+    <img id="myImg" src="{{ image_file }}" style="width:100%;max-width:200px">
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+      <span class="close">&times;</span>
+      <img class="modal-content" id="img01">
+      <div id="caption"></div>
+    </div>
+
     <br></br>
     <!--View for the subscribers-->
     <div class="w3-card w3-padding-large">
@@ -59,12 +70,13 @@
       {% endif %}
     {% endif %}
     <form action="{{ url_for('subscriber', story_id=story.id) }}" method="post">
+
       <div>
-        <div class="form-field">
+        <div class="form-field ">
           {{ formSubs.email.label }}: {{ formSubs.email }} {{ formSubs.submit }}
             {% if formSubs.email.errors %}
             <ul class="errors">
-                {% for error in form.email.errors %}
+                {% for error in formSubs.email.errors %}
                 <li>{{ error }}</li>
                 {% endfor %}
             </ul>
@@ -75,7 +87,7 @@
     </div>
     <br>
     <!--View for the comment-->
-    <div class="w3-card w3-padding-large">
+    <div class="w3-card w3-padding-large ">
     {% if story.comments %}
       {% if story.comments|length > 0 %}
         <h4>Comments</h4>
@@ -94,6 +106,7 @@
         {{ form.submit }}
     </form>
     </div>
+    <div class="w3-padding-32"></div>
 </div>
 
 <!-- End page content -->
@@ -112,6 +125,26 @@ function w3_close() {
     document.getElementById("mySidebar").style.display = "none";
     document.getElementById("myOverlay").style.display = "none";
 }
+// Get the modal
+    var modal = document.getElementById("myModal");
+
+    // Get the image and insert it inside the modal - use its "alt" text as a caption
+    var img = document.getElementById("myImg");
+    var modalImg = document.getElementById("img01");
+    var captionText = document.getElementById("caption");
+    img.onclick = function(){
+      modal.style.display = "block";
+      modalImg.src = this.src;
+      captionText.innerHTML = this.alt;
+    }
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+      modal.style.display = "none";
+    }
 </script>
 </body>
 </html>
