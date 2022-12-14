@@ -30,9 +30,9 @@
 <nav class="w3-sidebar w3- w3-collapse w3-white w3-animate-left" style="z-index:0;width:300px;" id="mySidebar"><br>
   <div class="w3-bar-block">
     <a  class="w3-bar-item w3-animate-left w3-wide"><b>{{company}}</b></a>
-    <a href="{{ url_for('index') }}" onclick="w3_close()" class="w3-bar-item w3-button w3-padding w3-text-teal"><i class="fa fa-user fa-fw w3-margin-right"></i>HOME</a>
+    <a href="{{ url_for('index') }}" onclick="w3_close()" class="w3-bar-item w3-button w3-padding w3-text-teal"><i class="fa fa-home fa-fw w3-margin-right"></i>HOME</a>
     <a href="{{url_for('get_stories')}}" onclick="w3_close()" class="w3-bar-item w3-button w3-padding"><i class="fa fa-solid fa-list fa-fw w3-margin-right"></i>STORYBOARD</a>
-    <a href="{{url_for('new_story')}}" onclick="w3_close()" class="w3-bar-item w3-button w3-padding"><i class="fa fa-solid fa-plus fa-fw w3-margin-right"></i>ADD NEW</a>
+    <a href="{{url_for('new_story')}}" onclick="w3_close()" class="w3-bar-item w3-button w3-padding"><i class="fa fa-solid fa-plus fa-fw w3-margin-right"></i>ADD NEW STORY</a>
     <a href="{{url_for('update_profile')}}" onclick="w3_close()" class="w3-bar-item w3-button w3-padding"><i class="fa fa-user-circle fa-plus fa-fw w3-margin-right"></i>UPDATE PROFILE</a>
     <a href="{{ url_for('logout') }}" onclick="w3_close()" class="w3-bar-item w3-button w3-padding"><i class="fa fa-solid fa-sign-out fa-fw w3-margin-right"></i>Logout</a>
   </div>

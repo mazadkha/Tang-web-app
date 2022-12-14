@@ -201,7 +201,7 @@ def update_profile():
         else:
             user = db.session.query(User).filter_by(id=session.get('user_id')).one()
 
-            return render_template('update.html', user=user, form=update, company='TANG')
+            return render_template('update.html', user=user, form=update, company=company)
     else:
         return redirect(url_for('login'))
         

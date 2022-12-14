@@ -26,7 +26,7 @@
 <!-- Subscribe Modal -->
  <div class="w3-container w3" style="max-width:600px; margin-left: auto; margin-right: auto; margin-bottom:100px;">
    <div class="w3-center w3-container w3-card" >
-     <h2 class="w3-wide">Update, habibi</h2>
+     <h2 class="w3-wide">Update</h2>
        <p>Update your account information!</p>
        <form method="post" action="/dashboard/update">
            <div class="form-field">{{ form.firstname.label }} {{ form.firstname }}
@@ -66,10 +66,9 @@
                    {% endif %}
                </div>
                {{ form.submit }}
+
        </form>
-       <div class="  w3-wide w3-padding w3-transparent">OR</div>
-       <p>Already have an account</p>
-       <a  href="{{ url_for('login') }}" class=" w3-button w3-padding w3-teal w3-margin-bottom ">Log In</a>
+       <button onclick="history.back()" class=" w3-button w3-padding w3-light-grey w3-margin-bottom ">CANCEL</button>
    </div>
  </div>
  <div class="sub_div">

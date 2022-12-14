@@ -101,4 +101,4 @@ class ChangePasswordForm(FlaskForm):
         EqualTo('password', message='Passwords must match.')
     ])
 
-    submit = SubmitField('Updata Info')
+    submit = SubmitField('UPDATE')
