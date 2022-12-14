@@ -10,7 +10,7 @@ from flask import request
 from database import db
 from models import Note as Note, Comment as Comment, Subscriber as Subscriber
 from models import User as User
-from forms import RegisterForm, LoginForm, CommentForm, SubscriberForm, AttachmentForm
+from forms import RegisterForm, LoginForm, CommentForm, SubscriberForm, AttachmentForm, ChangePasswordForm
 import bcrypt
 
 app = Flask(__name__)  # create an app
@@ -120,6 +120,7 @@ def new_story():
         return redirect(url_for('login'))
 
 
+
 @app.route('/dashboard/edit/<story_id>', methods=['GET', 'POST'])
 def update(story_id):
     attach = AttachmentForm()
@@ -177,6 +178,34 @@ def delete(story_id):
     else:
         # User is not in the session, redirect to login
         return redirect(url_for('login'))
+
+@app.route('/dashboard/update', methods=['POST', 'GET'])
+def update_profile():
+    
+    update = ChangePasswordForm()
+
+    if session.get('user'):
+
+        if request.method == 'POST':
+            
+            user = db.session.query(User).filter_by(id=session.get('user_id')).one()
+            user.first_name = request.form['firstname']
+            user.last_name = request.form['lastname']
+            user.password = bcrypt.hashpw(request.form['password'].encode('utf-8'), bcrypt.gensalt())
+
+            db.session.add(user)
+            db.session.commit()
+            session['user'] = request.form['firstname']
+            print(session.get('user'))
+            return redirect(url_for('get_stories'))
+        else:
+            user = db.session.query(User).filter_by(id=session.get('user_id')).one()
+
+            return render_template('update.html', user=user, form=update, company='TANG')
+    else:
+        return redirect(url_for('login'))
+        
+    
 
 
 @app.route('/register', methods=['POST', 'GET'])

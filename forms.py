@@ -82,3 +82,23 @@ class AttachmentForm(FlaskForm):
 
     picture = FileField('Upload Image file',
                         validators=[FileAllowed(['jpg', 'png'])])
+
+
+class ChangePasswordForm(FlaskForm):
+    class Meta:
+        csrf = False
+
+    firstname = StringField('First Name', validators=[Length(1, 10)])
+
+    lastname = StringField('Last Name', validators=[Length(1, 20)])
+
+    password = PasswordField('New Password', [
+        DataRequired(message='Please enter a new password.')
+    ])
+
+    confirmPassword = PasswordField('Confirm New Password', [
+        DataRequired(message='Please confirm your new password.'),
+        EqualTo('password', message='Passwords must match.')
+    ])
+
+    submit = SubmitField('Updata Info')
